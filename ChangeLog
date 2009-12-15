@@ -1,3 +1,10 @@
+2009-12-16    IWAMURO Motonori <vmi@nifty.com>
+
+	* Now, push source code to github.com/vmi/cocot.
+
+	* configure.ac: changed DEFAULT_PROC_CODE: UTF-8 to CP932,
+	and DEFAULT_TERM_CODE: CP932 to UTF-8. (for Cygwin-1.7)
+
 2008-11-17    IWAMURO Motonori <vmi@nifty.com>
 
 	* Add UTF-8 binary in archive and update cygwin-install.sh.

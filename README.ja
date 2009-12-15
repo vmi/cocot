@@ -1,142 +1,142 @@
 cocot - COde COnverter on Tty
 
-Copyright (c) 2002, 2003, 2004, 2005, 2008  IWAMURO Motonori
+Copyright (c) 2002, 2003, 2004, 2005, 2008, 2009  IWAMURO Motonori
 All rights reserved.
 
 
-1 ����ϲ���?
+1 これは何か?
 
-  ü���ȥץ������δ֤˳������ʸ���������Ѵ���Ԥ��ġ���Ǥ���Cygwin
-  ��ޤ�UNIX�ߴ��Ķ��ˤ����ơ�ssh��telnet�ʤɤȤȤ�����ѤǤ��ޤ���
-  (Windows����°��telnet�ǤϻȤ��ޤ���)
+  端末とプロセスの間に割り込んで文字コード変換を行うツールです。Cygwin
+  を含むUNIX互換環境において、sshやtelnetなどとともに利用できます。
+  (Windowsに附属のtelnetでは使えません)
 
-  ����С������Ǥ�Cygwin�Ķ�����Ǥ�������Kazuhiro NISHIYAMA����μ�
-  �ˤ�ꡢautotools�б��ˤʤ�ޤ�����
+  初期バージョンではCygwin環境限定でしたが、Kazuhiro NISHIYAMAさんの手
+  により、autotools対応になりました。
 
-  �ʤ��������Ͼܲ�UNIX�ץ�����ߥ󥰡�������[1]���ڤ�FreeBSD��
-  script.c[2]�򻲹ͤˤ��ޤ�����
-
-
-2 ���󥹥ȡ���
-
-  Cygwin�ˤĤ��Ƥϥ��������֤˥Х��ʥ꤬�ޤޤ�Ƥ��ޤ���Ÿ�������ǥ���
-  ���ȥ���ǡ�./install-cygwin.sh�פ�¹Ԥ����/usr/local/bin�˥���
-  �ȡ��뤵��ޤ���
-
-  ����ʳ���OS�ξ��ϡ�����Ū�ʡ�./configure�ס�make�ס�make install��
-  �ǥ��󥹥ȡ���Ǥ��ޤ���
+  なお、実装は詳解UNIXプログラミング・新装版[1]、及びFreeBSDの
+  script.c[2]を参考にしました。
 
 
-3 �Ķ�����
+2 インストール
 
-  ���ޥ�ɥץ���ץȤ������Ѥ����硢��⡼�ȴĶ���cygwin��terminfo��
-  ��򥤥󥹥ȡ��뤹��ɬ�פ�����ޤ����ʲ��ˤ�����򼨤��ޤ����ʤ�����
-  ���Ǥ�ssh�����ѤǤ��뤳�Ȥ�����Ȥ��Ƥ��ޤ���
+  Cygwinについてはアーカイブにバイナリが含まれています。展開したディレ
+  クトリ中で「./install-cygwin.sh」を実行すると/usr/local/binにインス
+  トールされます。
 
-  1) terminfo����μ���
-     Windows�Ķ���ǰʲ���¹Ԥ��ޤ���
+  それ以外のOSの場合は、一般的な「./configure」「make」「make install」
+  でインストールできます。
+
+
+3 環境設定
+
+  コマンドプロンプトから利用する場合、リモート環境にcygwinのterminfo情
+  報をインストールする必要があります。以下にその例を示します。なお、こ
+  こではsshが利用できることを前提としています。
+
+  1) terminfo情報の取得
+     Windows環境上で以下を実行します。
        $ infocmp cygwin > cygwin.terminfo
 
-  2) terminfo�����ž��
-       $ scp cygwin.terminfo [��⡼�ȥۥ���]:/tmp
+  2) terminfo情報の転送
+       $ scp cygwin.terminfo [リモートホスト]:/tmp
 
-  3) ��⡼�ȴĶ��˥�������
-       $ ssh [��⡼�ȥۥ���]
+  3) リモート環境にログイン
+       $ ssh [リモートホスト]
 
-  4) ��⡼�ȴĶ������� (�����ѡ��桼�����¤������ʤ����Τ�)
-     �����ѡ��桼�����¤������ʤ����ϻ������꤬ɬ�פǤ���������ˡ
-     �Ϥ��Ȥ��Υ�⡼�ȴĶ��˰�¸����Ȼפ��ޤ��Τǡ��ܺ٤ϥ�⡼��
-     �Ķ���terminfo�ޥ˥奢��ڡ������򤴻��Ȥ����������ʲ��Ǥ�Linux
-     (�������󥷥����bash)�����ꤷ�Ƥ��ޤ���
+  4) リモート環境の設定 (スーパーユーザ権限を得られない場合のみ)
+     スーパーユーザ権限を得られない場合は事前設定が必要です。設定方法
+     はお使いのリモート環境に依存すると思われますので、詳細はリモート
+     環境のterminfoマニュアルページ等をご参照ください。以下ではLinux
+     (ログインシェルはbash)を想定しています。
        $ cd
        $ mkdir .terminfo
        $ export TERMINFO=$HOME/.terminfo
-     bash�Υ������ȥ��åץ�����ץȤˤ�Ķ��ѿ�TERMINFO������򵭽Ҥ�
-     �Ƥ����ޤ���
+     bashのスタートアップスクリプトにも環境変数TERMINFOの設定を記述し
+     ておきます。
 
-  5) ��⡼�ȴĶ���terminfo�������Ͽ
-     �������ѡ��桼�����¤����뤳�Ȥ��Ǥ������ϡ�su�⤷����sudo���Ѥ�
-       �ưʲ���¹Ԥ��Ƥ���������
+  5) リモート環境にterminfo情報を登録
+     ※スーパーユーザ権限を得ることができる方は、suもしくはsudoを用い
+       て以下を実行してください。
        # tic /tmp/cygwin.terminfo
 
 
-4 �ӥ��
+4 ビルド
 
-  Cygwin�ξ�硢libiconv, libutil(inetutils�˴ޤޤ��)����Ѥ��Ƥ��뤿
-  �ᡢ�����ˤ���򥤥󥹥ȡ��뤷�Ƥ���ɬ�פ�����ޤ���Cygwin Setup��
-  Select Package���̤ǡ�Category��Devel��libiconv�����Category��Net��
-  inetutils�����򤷤ƥ��󥹥ȡ��뤷�Ƥ���������
-  ��Cygwin�ѥå�����������ǡ�libiconv�˴ؤ���Ķ�������Ƥ����礬��
-    ��褦�Ǥ������ξ���libiconv��ƥ��󥹥ȡ��뤷�ƤߤƤ���������
+  Cygwinの場合、libiconv, libutil(inetutilsに含まれる)を使用しているた
+  め、事前にこれをインストールしておく必要があります。Cygwin Setupの
+  Select Package画面で、Category→Devel→libiconvおよびCategory→Net→
+  inetutilsを選択してインストールしてください。
+  ※Cygwinパッケージの問題で、libiconvに関する環境が壊れている場合があ
+    るようです。その場合はlibiconvを再インストールしてみてください。
 
-  ����ʳ���OS�ˤĤ��Ƥϡ�Ŭ��ɬ�פʥѥå������򥤥󥹥ȡ��뤷�Ƥ�����
-  ����������(��ȴ��^^;)
+  それ以外のOSについては、適宜必要なパッケージをインストールしておいて
+  ください。(手抜き^^;)
 
-  ���Ȥϡ�����Ū�ʥ������ѥå�������Ʊ������
+  あとは、一般的なソースパッケージと同じく、
     ./configure
     make
     make install
-  �ǥӥ�ɤ���ӥ��󥹥ȡ��뤬�Ǥ��ޤ���
+  でビルドおよびインストールができます。
 
-  �ʤ���TERM_CODE��PROC_CODE�Υǥե���Ȥ�configure�ΰ����˻����ǽ��
-  ����
+  なお、TERM_CODEとPROC_CODEのデフォルトはconfigureの引数に指定可能で
+  す。
 
-  ���ߡ��ʲ��δĶ��ǥӥ�ɤǤ��뤳�Ȥ���ǧ����Ƥ��ޤ���
+  現在、以下の環境でビルドできることが確認されています。
     - cygwin
     - Debian GNU/Linux 3.0
     - OpenBSD 3.3 (?)
     - NetBSD 1.6.1 (?)
 
 
-5 �ɤ���äƻȤ��Τ�?
+5 どうやって使うのか?
 
-  ���ޥ�ɥץ���ץȤ�rxvt��ȤäƤ���Ȥ��ˡ�ʸ�������ɤ�EUC-JP�Ǥ����
-  ���Ȥ˥������󤹤�Ȥ���ͭ�ѤǤ���
+  コマンドプロンプトやrxvtを使っているときに、文字コードがEUC-JPであるホ
+  ストにログインするときに有用です。
 
 ------------------------------------------------------------------------------
-iwa@RYPRIM /winnt                                            ��Windows��ˤ���
-(528)> \ls --show-control-chars *.bmp                  ��ʸ�������ɤ�Shift_JIS
-winnt.bmp              ���󥿥ե�.bmp    �Ĥ��졼���Ԥ� 16.bmp
-winnt256.bmp           ����ܥ�.bmp      ���𸶤���.bmp
-���㤯�ʤ�.bmp         �ե��å���.bmp  ���ꥫ�å�.bmp
-���꡼�� ���ȡ���.bmp  ����.bmp
-���ݥƥå�����.bmp     ������.bmp
+iwa@RYPRIM /winnt                                            ←Windows上にいる
+(528)> \ls --show-control-chars *.bmp                  ←文字コードはShift_JIS
+winnt.bmp              サンタフェ.bmp    青いレース編み 16.bmp
+winnt256.bmp           シャボン.bmp      大草原の風.bmp
+しゃくなげ.bmp         フィッシング.bmp  珈琲カップ.bmp
+グリーン ストーン.bmp  羽毛.bmp
+サポテック織り.bmp     隅田川.bmp
 
 iwa@RYPRIM /winnt
-(529)> cocot ssh lydia                                  ��Linux��login���Ƥߤ�
+(529)> cocot ssh lydia                                  ←Linuxにloginしてみた
 Linux lydia 2.2.20 #1 Sat Apr 20 11:45:28 EST 2002 i586 unknown
 No mail.
 Last login: Sat Aug 24 21:11:13 2002 from ryprim.vmi.jp
-[iwa@lydia]~(1)$ echo $LANG                                       ��EUC-JP�Ķ�
+[iwa@lydia]~(1)$ echo $LANG                                       ←EUC-JP環境
 ja_JP.eucJP
 [iwa@lydia]~(2)$ date
-2002ǯ  8�� 24�� ������ 21:11:14 JST                      ��ʸ���������Ƥޤ���
+2002年  8月 24日 土曜日 21:11:14 JST                      ←文字化けしてません
 ------------------------------------------------------------------------------
 
-  ���ץ����ϰʲ����̤�Ǥ�:
+  オプションは以下の通りです:
 
-  -o LOGFILE	 �������Ѵ����Υ��ޥ�ɤν��Ϥ����ƥե�����˽��Ϥ��ޤ���
-  -a		 -o���ץ�����������ɵ��⡼�ɤˤ��ޤ���
-  -t TERM_CODE	 �����ߥʥ��ʸ�������ɤ���ꤷ�ޤ����ǥե���Ȥ�CP932��
-  -p PROC_CODE	 ���ޥ�ɥץ�������ʸ�������ɤ���ꤷ�ޤ����ǥե���Ȥ�EUC-JP��
-  -i		 ISO-2022-JP�Υ��������ץ������󥹤�̵�뤷�ޤ���
-  -n		 ̵�Ѵ��⡼�ɤˤ��ޤ���-o���ץ������Ȥ߹�碌�ơ�script(1)
-		 ������˻��Ѥ��ޤ���
-  -h, --help	 �إ�פ�ɽ�����ޤ���
-  -v, --version	 �С�������ɽ�����ޤ���
-
-
-7 �饤����
-
-����BSD�饤���󥹤Ȥ��ޤ���(see. COPYING)
+  -o LOGFILE	 コード変換前のコマンドの出力を全てファイルに出力します。
+  -a		 -oオプション指定時に追記モードにします。
+  -t TERM_CODE	 ターミナルの文字コードを指定します。デフォルトはCP932。
+  -p PROC_CODE	 コマンドプロセスの文字コードを指定します。デフォルトはEUC-JP。
+  -i		 ISO-2022-JPのエスケープシーケンスを無視します。
+  -n		 無変換モードにします。-oオプションを組み合わせて、script(1)
+		 の代わりに使用します。
+  -h, --help	 ヘルプを表示します。
+  -v, --version	 バージョンを表示します。
 
 
-8 ���ͻ���
+7 ライセンス
 
-[1] �ܲ�UNIX�ץ�����ߥ󥰡�������
+修正BSDライセンスとします。(see. COPYING)
+
+
+8 参考資料
+
+[1] 詳解UNIXプログラミング・新装版
     http://www.pearsoned.co.jp/washo/unix/wa_uni12-j.html
 
-[2] FreeBSD��script.c
+[2] FreeBSDのscript.c
     http://www.freebsd.org/cgi/cvsweb.cgi/src/usr.bin/script/
 
 [EOF]

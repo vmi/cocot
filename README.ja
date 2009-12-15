@@ -1,0 +1,142 @@
+cocot - COde COnverter on Tty
+
+Copyright (c) 2002, 2003, 2004, 2005, 2008  IWAMURO Motonori
+All rights reserved.
+
+
+1 これは何か?
+
+  端末とプロセスの間に割り込んで文字コード変換を行うツールです。Cygwin
+  を含むUNIX互換環境において、sshやtelnetなどとともに利用できます。
+  (Windowsに附属のtelnetでは使えません)
+
+  初期バージョンではCygwin環境限定でしたが、Kazuhiro NISHIYAMAさんの手
+  により、autotools対応になりました。
+
+  なお、実装は詳解UNIXプログラミング・新装版[1]、及びFreeBSDの
+  script.c[2]を参考にしました。
+
+
+2 インストール
+
+  Cygwinについてはアーカイブにバイナリが含まれています。展開したディレ
+  クトリ中で「./install-cygwin.sh」を実行すると/usr/local/binにインス
+  トールされます。
+
+  それ以外のOSの場合は、一般的な「./configure」「make」「make install」
+  でインストールできます。
+
+
+3 環境設定
+
+  コマンドプロンプトから利用する場合、リモート環境にcygwinのterminfo情
+  報をインストールする必要があります。以下にその例を示します。なお、こ
+  こではsshが利用できることを前提としています。
+
+  1) terminfo情報の取得
+     Windows環境上で以下を実行します。
+       $ infocmp cygwin > cygwin.terminfo
+
+  2) terminfo情報の転送
+       $ scp cygwin.terminfo [リモートホスト]:/tmp
+
+  3) リモート環境にログイン
+       $ ssh [リモートホスト]
+
+  4) リモート環境の設定 (スーパーユーザ権限を得られない場合のみ)
+     スーパーユーザ権限を得られない場合は事前設定が必要です。設定方法
+     はお使いのリモート環境に依存すると思われますので、詳細はリモート
+     環境のterminfoマニュアルページ等をご参照ください。以下ではLinux
+     (ログインシェルはbash)を想定しています。
+       $ cd
+       $ mkdir .terminfo
+       $ export TERMINFO=$HOME/.terminfo
+     bashのスタートアップスクリプトにも環境変数TERMINFOの設定を記述し
+     ておきます。
+
+  5) リモート環境にterminfo情報を登録
+     ※スーパーユーザ権限を得ることができる方は、suもしくはsudoを用い
+       て以下を実行してください。
+       # tic /tmp/cygwin.terminfo
+
+
+4 ビルド
+
+  Cygwinの場合、libiconv, libutil(inetutilsに含まれる)を使用しているた
+  め、事前にこれをインストールしておく必要があります。Cygwin Setupの
+  Select Package画面で、Category→Devel→libiconvおよびCategory→Net→
+  inetutilsを選択してインストールしてください。
+  ※Cygwinパッケージの問題で、libiconvに関する環境が壊れている場合があ
+    るようです。その場合はlibiconvを再インストールしてみてください。
+
+  それ以外のOSについては、適宜必要なパッケージをインストールしておいて
+  ください。(手抜き^^;)
+
+  あとは、一般的なソースパッケージと同じく、
+    ./configure
+    make
+    make install
+  でビルドおよびインストールができます。
+
+  なお、TERM_CODEとPROC_CODEのデフォルトはconfigureの引数に指定可能で
+  す。
+
+  現在、以下の環境でビルドできることが確認されています。
+    - cygwin
+    - Debian GNU/Linux 3.0
+    - OpenBSD 3.3 (?)
+    - NetBSD 1.6.1 (?)
+
+
+5 どうやって使うのか?
+
+  コマンドプロンプトやrxvtを使っているときに、文字コードがEUC-JPであるホ
+  ストにログインするときに有用です。
+
+------------------------------------------------------------------------------
+iwa@RYPRIM /winnt                                            ←Windows上にいる
+(528)> \ls --show-control-chars *.bmp                  ←文字コードはShift_JIS
+winnt.bmp              サンタフェ.bmp    青いレース編み 16.bmp
+winnt256.bmp           シャボン.bmp      大草原の風.bmp
+しゃくなげ.bmp         フィッシング.bmp  珈琲カップ.bmp
+グリーン ストーン.bmp  羽毛.bmp
+サポテック織り.bmp     隅田川.bmp
+
+iwa@RYPRIM /winnt
+(529)> cocot ssh lydia                                  ←Linuxにloginしてみた
+Linux lydia 2.2.20 #1 Sat Apr 20 11:45:28 EST 2002 i586 unknown
+No mail.
+Last login: Sat Aug 24 21:11:13 2002 from ryprim.vmi.jp
+[iwa@lydia]~(1)$ echo $LANG                                       ←EUC-JP環境
+ja_JP.eucJP
+[iwa@lydia]~(2)$ date
+2002年  8月 24日 土曜日 21:11:14 JST                      ←文字化けしてません
+------------------------------------------------------------------------------
+
+  オプションは以下の通りです:
+
+  -o LOGFILE	 コード変換前のコマンドの出力を全てファイルに出力します。
+  -a		 -oオプション指定時に追記モードにします。
+  -t TERM_CODE	 ターミナルの文字コードを指定します。デフォルトはCP932。
+  -p PROC_CODE	 コマンドプロセスの文字コードを指定します。デフォルトはEUC-JP。
+  -i		 ISO-2022-JPのエスケープシーケンスを無視します。
+  -n		 無変換モードにします。-oオプションを組み合わせて、script(1)
+		 の代わりに使用します。
+  -h, --help	 ヘルプを表示します。
+  -v, --version	 バージョンを表示します。
+
+
+7 ライセンス
+
+修正BSDライセンスとします。(see. COPYING)
+
+
+8 参考資料
+
+[1] 詳解UNIXプログラミング・新装版
+    http://www.pearsoned.co.jp/washo/unix/wa_uni12-j.html
+
+[2] FreeBSDのscript.c
+    http://www.freebsd.org/cgi/cvsweb.cgi/src/usr.bin/script/
+
+[EOF]

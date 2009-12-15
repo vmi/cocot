@@ -1,0 +1,80 @@
+2008-11-17    IWAMURO Motonori <vmi@nifty.com>
+
+	* Add UTF-8 binary in archive and update cygwin-install.sh.
+
+	* configure.ac: changed DEFAULT_PROC_CODE: EUC-JP to UTF-8.
+
+	* Regenerate configure by autoconf 2.63 and automake 1.9.6.
+
+2008-03-15    IWAMURO Motonori <vmi@nifty.com>
+
+	* l10n_cjk_uni_table.c: Update by EastAsianWidth-5.0.0.txt.
+
+	* Add options: '--help', '--version'
+
+	* Regenerate configure by autoconf 2.61 and automake 1.9.6.
+
+2005-12-12    IWAMURO Motonori <vmi@nifty.com>
+
+	* Add no-conversion mode. (-n)
+
+2004-12-20    IWAMURO Motonori <vmi@nifty.com>
+
+	* *HALF*-support for Unicode.
+
+2004-12-20    IWAMURO Motonori <vmi@nifty.com>
+
+	* Merged all changes.
+
+2004-12-20    TAGA Nayuta, A. SAKAI
+
+	* loop.c: fixed that cocot crash when invalid encoding name.
+
+2004-02-29    Kazuhiro NISHIYAMA
+
+	* README: added.
+
+2004-02-28    Kazuhiro NISHIYAMA
+
+	* configure.ac: raise an error if iconv is not found in the stage
+	of configure.
+
+2004-02-26    Kazuhiro NISHIYAMA
+
+	* malloc.c (rpl_malloc): added.
+
+	* init.c (init): fix checking logic of the return value of
+	openpty().
+
+2004-02-25    Kazuhiro NISHIYAMA
+
+	* use autoconf (2.59) and automake (1.7.9).
+
+2003-06-03    IWAMURO Motonori <vmi@nifty.com>
+
+	* Added new option (-i) which turns OFF the decoding of
+	ISO-2022-JP.
+
+	* Changed that stop decode "ESC ( B" when current status is
+	not Japanese characters.
+
+2002-10-24    IWAMURO Motonori <vmi@nifty.com>
+
+	* Added the original routine for only conversion of EUC-JP <->
+	Shift_JIS/CP932. It provides following functions:
+
+	  - Convert all the characters that can map code points including
+	  the charcters outside JIS X 0208 standard (number with a circle
+	  etc.).
+
+	  - At conversion in remote to local, decode ISO-2022-JP and "ESC
+	  ( I" escape sequence (known as designation of "half-width
+	  katakana"). Note: "ESC $ @" and "ESC $ B", "ESC ( B" and "ESC (
+	  J" are treated as equivalent.
+
+	  - Convert all the charcters of JIS X 0212 and Shift_JIS/CP932
+	  GAIJI (FF40-FFFC) to "WHITE SQUARE".
+
+2002-08-25    IWAMURO Motonori <vmi@nifty.com>
+
+	* First release.

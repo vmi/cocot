@@ -1,0 +1,84 @@
+2008-11-17    IWAMURO Motonori <vmi@nifty.com>
+
+	* アーカイブに UTF-8 バイナリを追加し、これに合わせて
+	cygwin-install.sh を更新。
+
+	* configure.ac: DEFAULT_PROC_CODE を EUC-JP から UTF-8 に変更。
+
+	* autoconf 2.63 と automake 1.9.6 で configure を再生成。
+
+2008-03-15    IWAMURO Motonori <vmi@nifty.com>
+
+	* l10n_cjk_uni_table.c: EastAsianWidth-5.0.0.txt を元に更新。
+
+	* オプション '--help', '--version' を追加。
+
+	* autoconf 2.61 と automake 1.9.6 で configure を再生成。
+
+2005-12-12    IWAMURO Motonori <vmi@nifty.com>
+
+	* 無変換モードの追加。(-n)
+
+2004-12-20    IWAMURO Motonori <vmi@nifty.com>
+
+	* 中途半端なUnicodeのサポート。
+
+2004-12-20    IWAMURO Motonori <vmi@nifty.com>
+
+	* 全ての変更をマージ。
+
+2004-12-20    TAGA Nayuta, A. SAKAI
+
+	* loop.c: 無効な文字コード名を指定すると落ちるバグを修正。
+
+2004-02-29    Kazuhiro NISHIYAMA
+
+	* README: 作成。
+
+2004-02-28    Kazuhiro NISHIYAMA
+
+	* configure.ac: iconvが見つからない場合はconfigureの段階でエラーに
+	なるように修正。
+
+2004-02-26    Kazuhiro NISHIYAMA
+
+	* malloc.c (rpl_malloc): 追加。
+
+	* init.c (init): openptyの返値のチェックが間違っていたのを修正。
+
+2004-02-25    Kazuhiro NISHIYAMA
+
+	* autoconf(2.59)とautomake(1.7.9)を使うように変更。
+
+2003-06-03    IWAMURO Motonori <vmi@nifty.com>
+
+	* ISO-2022-JPの解釈をOFFにするオプション(-i)を追加。
+
+	* ISO-2022-JP以外の文字セットを指示するエスケープシーケンスが
+	  ある場合に文字化けするため、ASCIIであると認識しているときに
+	  は「ESC ( B」を素通しするよう変更。
+
+
+2002-10-24    IWAMURO Motonori <vmi@nifty.com>
+
+	* EUC-JP⇔Shift_JIS/CP932の変換についてのみ独自ルーチンで処理
+	  するよう変更。これにより、以下の機能が追加された。
+
+	  - JIS X 0208規格外の文字(丸付き数字など)についても、コードポ
+	    イントが一致するものは全て変換する。
+
+	  - リモート→ローカルにおいて、ISO-2022-JPおよび「ESC ( I」
+	    (いわゆる半角カナ)のエスケープシーケンスを解釈し、対応する
+	    文字に変換する。ただし、「ESC $ @」と「ESC $ B」、
+	    「ESC ( B」と「ESC ( J」は同じ扱いとする。
+
+	  - JIS X 0212に対応する文字は全て「□」に変換する。
+
+	  - Shift_JIS/CP932の外字領域(FF40-FFFC)にある文字は全て「□」
+	    に変換する。
+
+
+2002-08-25    IWAMURO Motonori <vmi@nifty.com>
+
+	* ファーストリリース。
+

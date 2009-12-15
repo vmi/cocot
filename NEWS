@@ -1,0 +1,17 @@
+* Changes in cocot-20080315
+
+** Update East Asian Width table.
+
+** Add options: '--help', '--version'
+
+* Changes in cocot-20051212
+
+** add no-conversion mode. (like script(1))
+
+* Changes in cocot-20041220
+
+** *HALF*-support for Unicode.
+
+** merging various patches.
+
+[EOF]

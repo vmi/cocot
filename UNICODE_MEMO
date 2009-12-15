@@ -1,0 +1,59 @@
+1. UTF-8 encoding
+
+   U+00000000-U+0000007F = 0x00-0x7F
+   			0xxxxxxx
+   
+   U+00000080-U+000007FF = 0xC0-0xDF + 0x80-0xBF x 1
+   			110xxxxx 10xxxxxx
+   
+   U+00000800-U+0000FFFF = 0xE0-0xEF + 0x80-0xBF x 2
+   			1110xxxx 10xxxxxx 10xxxxxx
+   
+   U+00010000-U+001FFFFF = 0xF0-0xF8 + 0x80-0xBF x 3
+   			11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
+   
+   U+00200000-U+03FFFFFF = 0xF8-0xFB + 0x80-0xBF x 4
+   			111110xx 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx
+   
+   U+04000000-U+7FFFFFFF = 0xFC-0xFD + 0x80-0xBF x 5
+   			1111110x 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx
+   
+      |H
+      |0 1 2 3 4 5 6 7 8 9 A B C D E F
+   ---+-------------------------------
+   L 0|1 1 1 1 1 1 1 1 * * * * 2 2 3 4
+     1|1 1 1 1 1 1 1 1 * * * * 2 2 3 4
+     2|1 1 1 1 1 1 1 1 * * * * 2 2 3 4
+     3|1 1 1 1 1 1 1 1 * * * * 2 2 3 4
+     4|1 1 1 1 1 1 1 1 * * * * 2 2 3 4
+     5|1 1 1 1 1 1 1 1 * * * * 2 2 3 4
+     6|1 1 1 1 1 1 1 1 * * * * 2 2 3 4
+     7|1 1 1 1 1 1 1 1 * * * * 2 2 3 4
+     8|1 1 1 1 1 1 1 1 * * * * 2 2 3 5
+     9|1 1 1 1 1 1 1 1 * * * * 2 2 3 5
+     A|1 1 1 1 1 1 1 1 * * * * 2 2 3 5
+     B|1 1 1 1 1 1 1 1 * * * * 2 2 3 5
+     C|1 1 1 1 1 1 1 1 * * * * 2 2 3 6
+     D|1 1 1 1 1 1 1 1 * * * * 2 2 3 6
+     E|1 1 1 1 1 1 1 1 * * * * 2 2 3 *
+     F|1 1 1 1 1 1 1 1 * * * * 2 2 3 *
+
+2. Character width problems
+
+   - Unicode Standard Annex #11 East Asian Width
+     http://www.unicode.org/unicode/reports/tr11/
+     ftp://ftp.unicode.org/Public/UNIDATA/EastAsianWidth.txt
+
+   - Width problems
+     Japanse:
+     http://www.debian.or.jp/~kubota/unicode-symbols-width2.html
+     English:
+     http://www.debian.or.jp/~kubota/unicode-symbols-width2.html.en
+
+3. Character width type out of BMP from EastAsianWidth.txt
+   010000..01D7FF = N
+   020000..03FFFD = W
+   0E0001..0E007F = N
+   0E0100..10FFFD = A
+
+[EOF]

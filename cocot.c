@@ -28,6 +28,9 @@
 #if HAVE_SYS_WAIT_H
 #  include <sys/wait.h>
 #endif
+#if !defined(HAVE_LOGIN_TTY) && defined(HAVE_TERMIOS_H)
+#  include <termios.h>
+#endif
 #include <getopt.h>
 
 #include "init.h"
@@ -45,7 +48,7 @@ show_version(void)
     exit(1);
 }
 
-static volatile void
+volatile static void
 usage(int argc, char *argv[])
 {
     fprintf(stderr,
@@ -132,7 +135,17 @@ main(int argc, char *argv[])
 	close(mfd);
 	if (logfp)
 	    fclose(logfp);
+#ifdef HAVE_LOGIN_TTY
 	login_tty(sfd);
+#else
+	setsid();
+	ioctl(sfd, TIOCSCTTY, 0);
+	dup2(sfd, 0);
+	dup2(sfd, 1);
+	dup2(sfd, 2);
+	if (sfd > 2)
+	    close(sfd);
+#endif
 	execvp(argv[optind], argv + optind);
 	fatal("Can't exec process");
     }

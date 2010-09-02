@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT([cocot],[20091216])
+AC_INIT([cocot],[20100903])
 AM_INIT_AUTOMAKE
 AC_CONFIG_SRCDIR([cocot.c])
 AC_CONFIG_HEADERS([config.h])
@@ -14,7 +14,8 @@ AC_PROG_INSTALL
 # Checks for libraries.
 # FIXME: Replace `main' with a function in `-liconv':
 AC_CHECK_LIB([iconv], [main])
-AC_CHECK_LIB([util], [openpty])
+AC_CHECK_LIB([util], [openpty],,
+	[AC_CHECK_FILE([/dev/ptmx], [AC_CHECK_HEADERS([stropts.h])])])
 
 # Checks for header files.
 AC_CHECK_HEADERS([iconv.h],,[AC_MSG_ERROR(iconv.h is not available)])
@@ -38,6 +39,7 @@ AC_FUNC_SETVBUF_REVERSED
 AC_FUNC_VPRINTF
 AC_CHECK_FUNCS([memcpy memmove memset select strerror])
 AC_CHECK_FUNCS([max cfmakeraw])
+AC_CHECK_FUNCS([login_tty])
 
 # DEFAULT_TERM_CODE
 AC_ARG_WITH(default-term-code,

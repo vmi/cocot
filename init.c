@@ -28,6 +28,10 @@
 #if HAVE_PTY_H
 #  include <pty.h>
 #endif
+#if defined(HAVE_STROPTS_H) && !defined(linux)
+#  include <fcntl.h>
+#  include <stropts.h>
+#endif
 
 #include "init.h"
 
@@ -43,6 +47,8 @@ int cfmakeraw(struct termios *term_p)
     term_p->c_lflag &= ~(ECHO|ECHONL|ICANON|ISIG|IEXTEN);
     term_p->c_cflag &= ~(CSIZE|PARENB);
     term_p->c_cflag |= CS8;
+    term_p->c_cc[VMIN] = 1;
+    term_p->c_cc[VTIME] = 0;
     return 0;
 }
 
@@ -53,6 +59,10 @@ init(int *mfd_p, int *sfd_p)
 {
     struct termios term;
     struct winsize win;
+#ifndef HAVE_LIBUTIL
+    char *slave;
+    extern char *ptsname();
+#endif
 
     if (!isatty(STDIN_FILENO))
 	fatal("Is not a tty.");
@@ -60,8 +70,22 @@ init(int *mfd_p, int *sfd_p)
 	fatal("tcgetattr()");
     if (ioctl(STDIN_FILENO, TIOCGWINSZ, &win) < 0)
 	fatal("ioctl TIOCGWINSZ");
+#ifdef HAVE_LIBUTIL
     if (openpty(mfd_p, sfd_p, NULL, &term, &win) < 0)
 	fatal("openpty()");
+#else
+    if ((*mfd_p = open("/dev/ptmx", O_RDWR|O_NOCTTY)) < 0
+	|| grantpt(*mfd_p) < 0
+	|| unlockpt(*mfd_p) < 0)
+	fatal("open master pts");
+    if ((slave = ptsname(*mfd_p)) == NULL
+	|| (*sfd_p = open(slave, O_RDWR)) < 0)
+	fatal("open slave pts");
+#if defined(HAVE_STROPTS_H) && !defined(linux)
+    ioctl(*sfd_p, I_PUSH, "ptem");
+    ioctl(*sfd_p, I_PUSH, "ldterm");
+#endif
+#endif /* HAVE_LIBUTIL */
     ioctl(*mfd_p, TIOCSWINSZ, &win); /* Ummm... Why don't set window size? */
     init_term = term;
     cfmakeraw(&term);

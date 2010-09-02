@@ -1,3 +1,12 @@
+2010-09-03    YAMAGUCHI Takanori
+
+	* cocot.c, init.c, config.h.in, configure.ac: add Solaris /
+	OpenSolaris support.
+
+2010-09-03    IWAMURO Motonori <vmi@nifty.com>
+
+	* Regenerate configure by autoconf 2.65.
+
 2009-12-16    IWAMURO Motonori <vmi@nifty.com>
 
 	* Now, push source code to github.com/vmi/cocot.

@@ -1,6 +1,15 @@
+2010-09-03    YAMAGUCHI Takanori
+
+	* cocot.c, init.c, config.h.in, configure.ac: Solaris /
+	OpenSolaris サポートの追加。
+
+2010-09-03    IWAMURO Motonori <vmi@nifty.com>
+
+	* autoconf 2.65 configure を再生成。
+
 2009-12-16    IWAMURO Motonori <vmi@nifty.com>
 
-	* ソースを github.com/vmi/cocot に push.
+	* ソースを github.com/vmi/cocot に push。
 
 	* Cygwin-1.7 向けに、DEFAULT_PROC_CODE を CP932 に、
 	DEFAULT_TERM_CODE を UTF-8 に変更。

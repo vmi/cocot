@@ -57,8 +57,12 @@ usage(int argc, char *argv[])
 	    "Options:\n"
 	    "    -o LOGFILE     logging all output of command.\n"
 	    "    -a             append log file.\n"
-	    "    -t TERM_CODE   character code in terminal. (default is %s)\n"
-	    "    -p PROC_CODE   character code in command process. (default is %s)\n"
+	    "    -t TERM_CODE\n"
+	    "    -t TERM_INPUT_CODE,TERM_OUTPUT_CODE\n"
+            "                   character encoding(s) for terminal. (default is %s)\n"
+	    "    -p PROC_CODE\n"
+	    "    -p PROC_INPUT_CODE,PROC_OUTPUT_CODE\n"
+	    "                   character encoding(s) in command process. (default is %s)\n"
 	    "    -i             ignore ISO-2022-JP escape sequence.\n"
 	    "    -n             no conversion. (like script(1))\n"
 	    "    -h, --help     show this message.\n"
@@ -77,8 +81,11 @@ main(int argc, char *argv[])
     char *logfn = NULL;
     char *logmd = "w";
     FILE *logfp = NULL;
-    char *term_code = DEFAULT_TERM_CODE;
-    char *proc_code = DEFAULT_PROC_CODE;
+    char *term_input_code  = DEFAULT_TERM_CODE;
+    char *term_output_code = DEFAULT_TERM_CODE;
+    char *proc_input_code  = DEFAULT_PROC_CODE;
+    char *proc_output_code = DEFAULT_PROC_CODE;
+    char *p;
     int dec_jis = 1;
 
     int mfd, sfd;
@@ -102,16 +109,29 @@ main(int argc, char *argv[])
 	    logfn = optarg;
 	    break;
 	case 't':
-	    term_code = optarg;
+	    if ((p = strchr(optarg, ',')) != NULL) {
+		term_input_code = optarg;
+		*p++ = '\0';
+		term_output_code = p;
+	    } else {
+		term_input_code = term_output_code = optarg;
+	    }
 	    break;
 	case 'p':
-	    proc_code = optarg;
+	    if ((p = strchr(optarg, ',')) != NULL) {
+		proc_input_code = optarg;
+		*p++ = '\0';
+		proc_output_code = p;
+	    } else {
+		proc_input_code = proc_output_code = optarg;
+	    }
 	    break;
 	case 'i':
 	    dec_jis = 0;
 	    break;
 	case 'n':
-	    term_code = proc_code = NULL;
+	    term_input_code = term_output_code =
+	    proc_input_code = proc_output_code = NULL;
 	    break;
 	case 'h':
 	    usage(argc, argv);
@@ -156,7 +176,9 @@ main(int argc, char *argv[])
 	fatal("Can't open file '%s' (%s).", DEBUG_LOG, strerror(errno));
     setvbuf(debug, NULL, _IONBF, 0);
 #endif
-    loop(mfd, logfp, term_code, proc_code, dec_jis);
+    loop(mfd, logfp,
+	 term_input_code, term_output_code,
+	 proc_input_code, proc_output_code, dec_jis);
     close(mfd);
     if (logfp)
 	fclose(logfp);

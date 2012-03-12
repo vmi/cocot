@@ -11,6 +11,9 @@
 #include <stdio.h>
 
 void
-loop(int mfd, FILE *fp, char *term_code, char *proc_code, int dec_jis);
+loop(int mfd, FILE *fp,
+     char *term_input_code, char *term_output_code,
+     char *proc_input_code, char *proc_output_code,
+     int dec_jis);
 
 #endif /* LOOP_H */

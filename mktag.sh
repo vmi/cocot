@@ -1,7 +1,7 @@
 #!/bin/sh
 
 run=false
-if [ x"$1" = x"--run" ]; then
+if [ -n "$1" ]; then
   run=true
   echo "* True run mode."
 else
@@ -13,7 +13,7 @@ ver=`perl -nle '/^AC_INIT\([^,]+,\[([^\]]+)\]\)/ && print $1' configure.ac`
 cmd="git tag cocot-$ver"
 
 if $run; then
-  eval "$cmd"
+  eval "$cmd -m '$1'"
 else
   echo "[$cmd]"
 fi

@@ -102,7 +102,7 @@ done(void)
 	tcsetattr(STDIN_FILENO, TCSAFLUSH, &init_term);
 }
 
-volatile void
+void
 fatal(const char *fmt, ...)
 {
     va_list ap;

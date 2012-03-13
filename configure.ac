@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT([cocot],[20100903])
+AC_INIT([cocot],[1.1-20120313])
 AM_INIT_AUTOMAKE
 AC_CONFIG_SRCDIR([cocot.c])
 AC_CONFIG_HEADERS([config.h])

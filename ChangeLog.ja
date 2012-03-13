@@ -1,3 +1,18 @@
+2012-03-13    IWAMURO Motonori <vmi@nifty.com>
+
+	* cocot.c, init.c, init.h: warning の部分を修正。
+
+	* AUTHORS, README, README.ja: ドキュメントを改訂。
+
+	* configure.ac: バージョンを変更。
+
+	* autoconf 2.68 で configure を再生成。
+
+2012-03-13    Akinori MUSHA  <knu@iDaemons.org>
+
+	* cocot.c, loop.c, loop.h: 入出力のエンコーディングを分離。
+	例えば UTF-8-MAC から UTF-8 への正規化を可能にする。
+
 2010-09-03    YAMAGUCHI Takanori
 
 	* cocot.c, init.c, config.h.in, configure.ac: Solaris /
@@ -5,7 +20,7 @@
 
 2010-09-03    IWAMURO Motonori <vmi@nifty.com>
 
-	* autoconf 2.65 configure を再生成。
+	* autoconf 2.65 で configure を再生成。
 
 2009-12-16    IWAMURO Motonori <vmi@nifty.com>
 

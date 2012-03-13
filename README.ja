@@ -1,7 +1,6 @@
 cocot - COde COnverter on Tty
 
-Copyright (c) 2002, 2003, 2004, 2005, 2008, 2009  IWAMURO Motonori
-All rights reserved.
+Copyright (c) 2002-2012  IWAMURO Motonori  All rights reserved.
 
 
 1 これは何か?
@@ -17,14 +16,30 @@ All rights reserved.
   script.c[2]を参考にしました。
 
 
-2 インストール
+2 ビルド／インストール
 
-  Cygwinについてはアーカイブにバイナリが含まれています。展開したディレ
-  クトリ中で「./install-cygwin.sh」を実行すると/usr/local/binにインス
-  トールされます。
+2.1 事前準備
 
-  それ以外のOSの場合は、一般的な「./configure」「make」「make install」
-  でインストールできます。
+  Cygwinの場合、libiconv, libutil(inetutilsに含まれる)を使用しているた
+  め、事前にこれをインストールしておく必要があります。Cygwin Setupの
+  Select Package画面で、Category→Devel→libiconvおよびCategory→Net→
+  inetutilsを選択してインストールしてください。
+  ※Cygwinパッケージの問題で、libiconvに関する環境が壊れている場合があ
+    るようです。その場合はlibiconvを再インストールしてみてください。
+
+  それ以外のOSについては、適宜必要なパッケージをインストールしておいて
+  ください。(手抜き^^;)
+
+2.2 ビルド／インストール手順
+
+  ビルド／インストールの手順は、一般的なautotoolsベースのツールと同様です。
+  ターミナルエミュレータやプロセスのエンコーディングを変更したい場合は、
+  --with-default-term-code、--with-default-proc-code を指定してください。
+  デフォルトはターミナルが UTF-8、プロセスが CP932 となっています。
+
+    ./configure [--with-default-term-code=CODE] [--with-default-proc-code=CODE]
+    make
+    make install
 
 
 3 環境設定
@@ -60,37 +75,9 @@ All rights reserved.
        # tic /tmp/cygwin.terminfo
 
 
-4 ビルド
+4 どうやって使うのか?
 
-  Cygwinの場合、libiconv, libutil(inetutilsに含まれる)を使用しているた
-  め、事前にこれをインストールしておく必要があります。Cygwin Setupの
-  Select Package画面で、Category→Devel→libiconvおよびCategory→Net→
-  inetutilsを選択してインストールしてください。
-  ※Cygwinパッケージの問題で、libiconvに関する環境が壊れている場合があ
-    るようです。その場合はlibiconvを再インストールしてみてください。
-
-  それ以外のOSについては、適宜必要なパッケージをインストールしておいて
-  ください。(手抜き^^;)
-
-  あとは、一般的なソースパッケージと同じく、
-    ./configure
-    make
-    make install
-  でビルドおよびインストールができます。
-
-  なお、TERM_CODEとPROC_CODEのデフォルトはconfigureの引数に指定可能で
-  す。
-
-  現在、以下の環境でビルドできることが確認されています。
-    - cygwin
-    - Debian GNU/Linux 3.0
-    - OpenBSD 3.3 (?)
-    - NetBSD 1.6.1 (?)
-
-
-5 どうやって使うのか?
-
-  コマンドプロンプトやrxvtを使っているときに、文字コードがEUC-JPであるホ
+  コマンドプロンプトやminttyを使っているときに、文字コードがEUC-JPであるホ
   ストにログインするときに有用です。
 
 ------------------------------------------------------------------------------
@@ -119,10 +106,12 @@ ja_JP.eucJP
   -a		 -oオプション指定時に追記モードにします。
   -t TERM_CODE
   -t TERM_INPUT_CODE,TERM_OUTPUT_CODE
-		 ターミナルの文字コードを指定します。デフォルトはCP932。
+		 ターミナルの文字コードを指定します。
+                 デフォルトはCP932。(configureオプションで変更可)
   -p PROC_CODE
   -t PROC_INPUT_CODE,PROC_OUTPUT_CODE
-		 コマンドプロセスの文字コードを指定します。デフォルトはEUC-JP。
+		 コマンドプロセスの文字コードを指定します。
+                 デフォルトはEUC-JP。(configureオプションで変更可)
   -i		 ISO-2022-JPのエスケープシーケンスを無視します。
   -n		 無変換モードにします。-oオプションを組み合わせて、script(1)
 		 の代わりに使用します。

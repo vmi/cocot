@@ -48,7 +48,7 @@ show_version(void)
     exit(1);
 }
 
-volatile static void
+static void
 usage(int argc, char *argv[])
 {
     fprintf(stderr,

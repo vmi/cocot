@@ -7,7 +7,7 @@ init(int *mfd_p, int *sfd_p);
 void
 done(void);
 
-volatile void
+void
 fatal(const char *fmt, ...);
 
 #endif /* INIT_H */

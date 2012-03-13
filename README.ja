@@ -117,8 +117,12 @@ ja_JP.eucJP
 
   -o LOGFILE	 コード変換前のコマンドの出力を全てファイルに出力します。
   -a		 -oオプション指定時に追記モードにします。
-  -t TERM_CODE	 ターミナルの文字コードを指定します。デフォルトはCP932。
-  -p PROC_CODE	 コマンドプロセスの文字コードを指定します。デフォルトはEUC-JP。
+  -t TERM_CODE
+  -t TERM_INPUT_CODE,TERM_OUTPUT_CODE
+		 ターミナルの文字コードを指定します。デフォルトはCP932。
+  -p PROC_CODE
+  -t PROC_INPUT_CODE,PROC_OUTPUT_CODE
+		 コマンドプロセスの文字コードを指定します。デフォルトはEUC-JP。
   -i		 ISO-2022-JPのエスケープシーケンスを無視します。
   -n		 無変換モードにします。-oオプションを組み合わせて、script(1)
 		 の代わりに使用します。

@@ -28,17 +28,22 @@
 #endif
 
 void
-loop(int mfd, FILE *fp, char *term_code, char *proc_code, int dec_jis)
+loop(int mfd, FILE *fp,
+     char *term_input_code, char *term_output_code,
+     char *proc_input_code, char *proc_output_code,
+     int dec_jis)
 {
     CCIO master, slave;
     fd_set fds;
     int fdmax = max(STDIN_FILENO, STDOUT_FILENO) + 1;
     if (fdmax < mfd)
 	fdmax = mfd + 1;
-    if (ccio_init(&master, proc_code, term_code, 0) == CCIO_ERROR ||
-	ccio_init(&slave, term_code, proc_code, dec_jis) == CCIO_ERROR)
-	fatal("%s: TERM_CODE(%s) and/or PROC_CODE(%s) is invalid.",
-	      strerror(errno), term_code, proc_code);
+    if (ccio_init(&master, proc_input_code, term_input_code, 0) == CCIO_ERROR ||
+	ccio_init(&slave, term_output_code, proc_output_code, dec_jis) == CCIO_ERROR)
+	fatal("%s: TERM_CODE(%s,%s) and/or PROC_CODE(%s,%s) is invalid.",
+	      strerror(errno),
+	      term_input_code, term_output_code,
+	      proc_input_code, proc_output_code);
     reg_sigwinch(mfd);
     while (1) {
 	FD_ZERO(&fds);

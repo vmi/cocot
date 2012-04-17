@@ -77,20 +77,21 @@ Copyright (c) 2002-2012  IWAMURO Motonori  All rights reserved.
 
 4 どうやって使うのか?
 
-  コマンドプロンプトやminttyを使っているときに、文字コードがEUC-JPであるホ
-  ストにログインするときに有用です。
+  Cygwinを使っているときに、文字コードがEUC-JPであるホストにログインし
+  たり、minttyを使ってるときに、文字列をCP932で出力するコマンドを使用す
+  るときに有用です。
 
 ------------------------------------------------------------------------------
-iwa@RYPRIM /winnt                                            ←Windows上にいる
-(528)> \ls --show-control-chars *.bmp                  ←文字コードはShift_JIS
+iwa@RYPRIM /windows                                          ←Windows上にいる
+(528)> \ls *.bmp                                           ←文字コードはUTF-8
 winnt.bmp              サンタフェ.bmp    青いレース編み 16.bmp
 winnt256.bmp           シャボン.bmp      大草原の風.bmp
 しゃくなげ.bmp         フィッシング.bmp  珈琲カップ.bmp
 グリーン ストーン.bmp  羽毛.bmp
 サポテック織り.bmp     隅田川.bmp
 
-iwa@RYPRIM /winnt
-(529)> cocot ssh lydia                                  ←Linuxにloginしてみた
+iwa@RYPRIM /windows
+(529)> cocot -p EUC-JP ssh lydia                        ←Linuxにloginしてみた
 Linux lydia 2.2.20 #1 Sat Apr 20 11:45:28 EST 2002 i586 unknown
 No mail.
 Last login: Sat Aug 24 21:11:13 2002 from ryprim.vmi.jp
@@ -100,6 +101,19 @@ ja_JP.eucJP
 2002年  8月 24日 土曜日 21:11:14 JST                      ←文字化けしてません
 ------------------------------------------------------------------------------
 
+  Mac OS X環境では、標準コマンドがパス名などをNFDのUTF-8で出力します。
+  これを NFC に変換してくれるシェル環境を起動したい場合、
+
+    cocot -p UTF-8-MAC -t UTF-8 zsh
+
+  とすればよさそうに思えますが、これではキーボードからの入力がNFDに変換
+  されてプロセスに送られてしまうという問題があります。このような場合は、
+  以下のようにプロセスの入出力エンコーディングを別々に指定することで対
+  応できます。
+
+    cocot -p UTF-8,UTF-8-MAC -t UTF-8 zsh
+
+
   オプションは以下の通りです:
 
   -o LOGFILE	 コード変換前のコマンドの出力を全てファイルに出力します。
@@ -107,11 +121,11 @@ ja_JP.eucJP
   -t TERM_CODE
   -t TERM_INPUT_CODE,TERM_OUTPUT_CODE
 		 ターミナルの文字コードを指定します。
-                 デフォルトはCP932。(configureオプションで変更可)
+                 デフォルトはUTF-8。(configureオプションで変更可)
   -p PROC_CODE
-  -t PROC_INPUT_CODE,PROC_OUTPUT_CODE
+  -p PROC_INPUT_CODE,PROC_OUTPUT_CODE
 		 コマンドプロセスの文字コードを指定します。
-                 デフォルトはEUC-JP。(configureオプションで変更可)
+                 デフォルトはCP932。(configureオプションで変更可)
   -i		 ISO-2022-JPのエスケープシーケンスを無視します。
   -n		 無変換モードにします。-oオプションを組み合わせて、script(1)
 		 の代わりに使用します。

@@ -25,6 +25,9 @@
 #ifdef HAVE_LIBUTIL_H
 #  include <libutil.h>
 #endif
+#ifdef HAVE_UTIL_H
+#  include <util.h>
+#endif
 #if HAVE_PTY_H
 #  include <pty.h>
 #endif
@@ -86,17 +89,31 @@ init(int *mfd_p, int *sfd_p)
     ioctl(*sfd_p, I_PUSH, "ldterm");
 #endif
 #endif /* HAVE_LIBUTIL */
-    ioctl(*mfd_p, TIOCSWINSZ, &win); /* Ummm... Why don't set window size? */
-    init_term = term;
-    cfmakeraw(&term);
+    init_tty(*mfd_p, &term, &win);
+}
+
+void
+init_tty(int mfd, struct termios *term_p, struct winsize *win_p)
+{
+    struct termios term;
+    struct winsize win;
+
+    if (term_p == NULL && tcgetattr(STDIN_FILENO, term_p = &term) < 0)
+	fatal("tcgetattr()");
+    if (win_p == NULL && ioctl(STDIN_FILENO, TIOCGWINSZ, win_p = &win) < 0)
+	fatal("ioctl TIOCGWINSZ");
+
+    ioctl(mfd, TIOCSWINSZ, win_p); /* Ummm... Why don't set window size? */
+    init_term = *term_p;
+    cfmakeraw(term_p);
     /* term_p->c_lflag &= ~ECHO; (script.c in FreeBSD) */
-    if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &term) < 0)
+    if (tcsetattr(STDIN_FILENO, TCSAFLUSH, term_p) < 0)
 	fatal("tcsetattr()");
     initialized = 1;
 }
 
 void
-done(void)
+reset_tty(void)
 {
     if (initialized)
 	tcsetattr(STDIN_FILENO, TCSAFLUSH, &init_term);
@@ -111,6 +128,6 @@ fatal(const char *fmt, ...)
     vfprintf(stderr, fmt, ap);
     fputs("\nAbort.\n", stderr);
     va_end(ap);
-    done();
+    reset_tty();
     exit(1);
 }

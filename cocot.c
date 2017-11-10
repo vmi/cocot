@@ -31,10 +31,20 @@
 #if !defined(HAVE_LOGIN_TTY) && defined(HAVE_TERMIOS_H)
 #  include <termios.h>
 #endif
+#if HAVE_LIBUTIL_H
+#  include <libutil.h>
+#endif
+#if HAVE_UTIL_H
+#  include <util.h>
+#endif
+#if HAVE_SIGNAL_H
+#  include <signal.h>
+#endif
 #include <getopt.h>
 
 #include "init.h"
 #include "loop.h"
+#include "suspend.h"
 
 #if DEBUG
 #define DEBUG_LOG "debug.log"
@@ -90,7 +100,7 @@ main(int argc, char *argv[])
 
     int mfd, sfd;
     int status;
-    pid_t pid;
+    pid_t ppid, cpid, gcpid;
 
     if (argc == 1)
 	usage(argc, argv);
@@ -147,10 +157,11 @@ main(int argc, char *argv[])
 	setvbuf(logfp, NULL, _IONBF, 0);
     }
     init(&mfd, &sfd);
-    if ((pid = fork()) < 0) {
+    ppid = getpid();
+    if ((cpid = fork()) < 0) {
 	/* error */
 	fatal("Can't fork process");
-    } else if (pid == 0) {
+    } else if (cpid == 0) {
 	/* child */
 	close(mfd);
 	if (logfp)
@@ -166,8 +177,24 @@ main(int argc, char *argv[])
 	if (sfd > 2)
 	    close(sfd);
 #endif
-	execvp(argv[optind], argv + optind);
-	fatal("Can't exec process");
+	if ((gcpid = fork()) < 0) {
+	    /* error */
+	    fatal("Can't fork subprocess");
+	} else if (gcpid == 0) {
+	    /* grandchild */
+	    setfg();
+	    execvp(argv[optind], argv + optind);
+	    fatal("Can't exec process");
+	}
+	/* child */
+	do {
+	    if (waitpid(gcpid, &status, WUNTRACED) < 0)
+		fatal("waitpid");
+	    if (WIFSTOPPED(status))
+		kill(ppid, SIGTSTP);
+	    kill(gcpid, SIGCONT);
+	} while (!WIFEXITED(status) && !WIFSIGNALED(status));
+	exit(0);
     }
     /* parent */
     close(sfd);
@@ -183,6 +210,6 @@ main(int argc, char *argv[])
     if (logfp)
 	fclose(logfp);
     wait(&status);
-    done();
+    reset_tty();
     return 0;
 }

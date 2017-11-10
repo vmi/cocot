@@ -48,6 +48,10 @@ setfg(void)
 {
     sigset_t osigset, nsigset;
 
+    /*
+     * Block the tty signals till things set correctly. 
+     * Taken from util.c of csh in NetBSD.
+     */
     sigemptyset(&nsigset);
     sigaddset(&nsigset, SIGTSTP);
     sigaddset(&nsigset, SIGTTIN);

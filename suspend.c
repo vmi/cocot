@@ -44,13 +44,6 @@ rm_sigtstp(void)
 }
 
 void
-do_suspend(void)
-{
-
-    kill(0, SIGTSTP);
-}
-
-void
 setfg(void)
 {
     sigset_t osigset, nsigset;

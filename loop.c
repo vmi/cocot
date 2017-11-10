@@ -20,6 +20,9 @@
 #if HAVE_STRING_H
 #  include <string.h>
 #endif
+#if HAVE_SIGNAL_H
+#  include <signal.h>
+#endif
 #include <errno.h>
 
 #include "init.h"
@@ -55,7 +58,7 @@ loop(int mfd, FILE *fp,
 	    do_tstp = 0;
     	    rm_sigtstp();
 	    reset_tty();
-	    do_suspend();
+	    kill(0, SIGTSTP);
 	    init_tty(mfd, NULL, NULL);
     	    reg_sigtstp();
 	}

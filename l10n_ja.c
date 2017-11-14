@@ -19,7 +19,7 @@
 #include "l10n_ja.h"
 
 #define WRITE_BACK(back) \
-    (*spp = (sp - (back)), *scp = sc, *dpp = dp, *dcp = dc)
+    (*spp = (const char *) (sp - (back)), *scp = sc, *dpp = (char *) dp, *dcp = dc)
 
 #define JA_REF(p, m) (((L10N_JA *) (p))->m)
 
@@ -70,9 +70,9 @@ l10n_ja_eucj2sjis(void *ja,
     int c, d;
     int nc_cnt = 0; /* •ÏŠ·Œ³‚É‚ ‚Á‚Ä•ÏŠ·æ‚É‚È‚¢•¶š‚Ì” */
 
-    sp = *spp;
+    sp = (const unsigned char *) *spp;
     sc = *scp;
-    dp = *dpp;
+    dp = (unsigned char *) *dpp;
     dc = *dcp;
     jis = JA_REF(ja, jis);
     d = 0; /* avoid compiler warning */
@@ -220,9 +220,9 @@ l10n_ja_sjis2eucj(void *ja,
     int c, d;
     int nc_cnt = 0;
 
-    sp = *spp;
+    sp = (const unsigned char *) *spp;
     sc = *scp;
-    dp = *dpp;
+    dp = (unsigned char *) *dpp;
     dc = *dcp;
     jis = JA_REF(ja, jis);
 

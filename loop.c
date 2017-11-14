@@ -17,6 +17,9 @@
 #if HAVE_SYS_TIME_H
 #  include <sys/time.h>
 #endif
+#if HAVE_STRING_H
+#  include <string.h>
+#endif
 #include <errno.h>
 
 #include "init.h"

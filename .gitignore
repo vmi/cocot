@@ -10,3 +10,6 @@ config.log
 config.status
 stamp-h1
 tmp/
+/cocot
+/cocot.exe
+*.log

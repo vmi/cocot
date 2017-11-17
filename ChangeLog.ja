@@ -1,3 +1,13 @@
+2017-11-18    IWAMURO Motonori <vmi@nifty.com>
+
+	* INSTALL, Makefile.in, aclocal.m4, compile, config.h.in, configure, configure.ac, depcomp, install-sh, missing, mkinstalldirs: ビルドスクリプトの最新化。
+
+	* cocot.c, init.c, l10n_cjk_uni.c, l10n_ja.c, loop.c: コンパイル時の警告に対処。
+
+2017-11-10    Rin OKUYAMA  <rokuyama@rk.phys.keio.ac.jp>
+
+	* Makefile.am, configure.ac, cocot.c, init.c, init.h, loop.c, loop.c, sigwinch.c, suspend.c, suspend.h: Allow coprocess to suspend.
+
 2012-03-13    IWAMURO Motonori <vmi@nifty.com>
 
 	* cocot.c, init.c, init.h: warning の部分を修正。

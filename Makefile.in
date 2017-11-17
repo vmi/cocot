@@ -105,7 +105,7 @@ PROGRAMS = $(bin_PROGRAMS)
 am_cocot_OBJECTS = ccio.$(OBJEXT) cocot.$(OBJEXT) init.$(OBJEXT) \
 	l10n_ja.$(OBJEXT) l10n_cjk_uni.$(OBJEXT) \
 	l10n_cjk_uni_table.$(OBJEXT) loop.$(OBJEXT) sigwinch.$(OBJEXT) \
-	malloc.$(OBJEXT)
+	suspend.$(OBJEXT) malloc.$(OBJEXT)
 cocot_OBJECTS = $(am_cocot_OBJECTS)
 cocot_LDADD = $(LDADD)
 AM_V_P = $(am__v_P_@AM_V@)
@@ -272,7 +272,7 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-cocot_SOURCES = ccio.c ccio.h cocot.c init.c init.h l10n_ja.c l10n_ja.h l10n_cjk_uni.c l10n_cjk_uni.h l10n_cjk_uni_table.c l10n_cjk_uni_table.h loop.c loop.h sigwinch.c sigwinch.h malloc.c debug.h
+cocot_SOURCES = ccio.c ccio.h cocot.c init.c init.h l10n_ja.c l10n_ja.h l10n_cjk_uni.c l10n_cjk_uni.h l10n_cjk_uni_table.c l10n_cjk_uni_table.h loop.c loop.h sigwinch.c sigwinch.h suspend.c suspend.h malloc.c debug.h
 EXTRA_DIST = ChangeLog.ja README.ja UNICODE_MEMO make_l10n_cjk_uni_table.sh make_l10n_cjk_uni_table.pl cygwin-install.sh cocot.exe
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-am
@@ -389,6 +389,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/loop.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/malloc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sigwinch.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/suspend.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<

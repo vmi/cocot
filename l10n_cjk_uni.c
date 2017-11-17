@@ -47,7 +47,7 @@ l10n_cjk_uni_skip(const char **spp, size_t *scp)
     size_t ch;
     int w;
 
-    sp = *spp;
+    sp = (const unsigned char *) *spp;
     cb = char_bytes[sp[0]];
     if (cb > *scp)
 	goto error;

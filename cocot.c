@@ -28,6 +28,12 @@
 #if HAVE_SYS_WAIT_H
 #  include <sys/wait.h>
 #endif
+#if HAVE_LIBUTIL_H
+#  include <libutil.h>
+#endif
+#if HAVE_UTIL_H
+#  include <util.h>
+#endif
 #if !defined(HAVE_LOGIN_TTY) && defined(HAVE_TERMIOS_H)
 #  include <termios.h>
 #endif

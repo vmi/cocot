@@ -14,7 +14,9 @@
 #if HAVE_TERMIOS_H
 #  include <termios.h>
 #endif
-#include <signal.h>
+#if HAVE_SIGNAL_H
+#  include <signal.h>
+#endif
 #if HAVE_SYS_TYPES_H
 #  include <sys/types.h>
 #endif

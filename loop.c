@@ -17,11 +17,18 @@
 #if HAVE_SYS_TIME_H
 #  include <sys/time.h>
 #endif
+#if HAVE_STRING_H
+#  include <string.h>
+#endif
+#if HAVE_SIGNAL_H
+#  include <signal.h>
+#endif
 #include <errno.h>
 
 #include "init.h"
 #include "sigwinch.h"
 #include "ccio.h"
+#include "suspend.h"
 
 #ifndef HAVE_MAX
 #define max(a, b) ((a) > (b) ? (a) : (b))
@@ -45,7 +52,16 @@ loop(int mfd, FILE *fp,
 	      term_input_code, term_output_code,
 	      proc_input_code, proc_output_code);
     reg_sigwinch(mfd);
+    reg_sigtstp();
     while (1) {
+	if (do_tstp) {
+	    do_tstp = 0;
+    	    rm_sigtstp();
+	    reset_tty();
+	    kill(0, SIGTSTP);
+	    init_tty(mfd, NULL, NULL);
+    	    reg_sigtstp();
+	}
 	FD_ZERO(&fds);
 	FD_SET(STDIN_FILENO, &fds);
 	FD_SET(mfd, &fds);
@@ -62,6 +78,7 @@ loop(int mfd, FILE *fp,
 	if (ccio_write(&slave, STDOUT_FILENO) == CCIO_ERROR)
 	    break;
     }
+    rm_sigtstp();
     rm_sigwinch();
     ccio_done(&master);
     ccio_done(&slave);

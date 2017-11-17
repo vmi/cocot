@@ -22,7 +22,8 @@ AC_CHECK_HEADERS([iconv.h],,[AC_MSG_ERROR(iconv.h is not available)])
 AC_HEADER_STDC
 AC_HEADER_SYS_WAIT
 AC_CHECK_HEADERS([stdlib.h string.h sys/ioctl.h sys/time.h termios.h unistd.h utmp.h])
-AC_CHECK_HEADERS([libutil.h pty.h])
+AC_CHECK_HEADERS([libutil.h util.h pty.h])
+AC_CHECK_HEADERS([signal.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST

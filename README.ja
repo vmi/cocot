@@ -32,14 +32,16 @@ Copyright (c) 2002-2017  IWAMURO Motonori  All rights reserved.
 
 2.2 ビルド／インストール手順
 
-  ビルド／インストールの手順は、一般的なautotoolsベースのツールと同様です。
+  ビルドには CMake (3.12 以降) を使用します。
   ターミナルエミュレータやプロセスのエンコーディングを変更したい場合は、
-  --with-default-term-code、--with-default-proc-code を指定してください。
+  -DDEFAULT_TERM_CODE、-DDEFAULT_PROC_CODE を指定してください。
   デフォルトはターミナルが UTF-8、プロセスが CP932 となっています。
 
-    ./configure [--with-default-term-code=CODE] [--with-default-proc-code=CODE]
-    make
-    make install
+    cmake -S . -B build [-DDEFAULT_TERM_CODE=CODE] [-DDEFAULT_PROC_CODE=CODE]
+    cmake --build build
+    cmake --install build
+
+  インストール先は -DCMAKE_INSTALL_PREFIX=DIR で変更できます。
 
 
 3 環境設定
@@ -121,11 +123,11 @@ ja_JP.eucJP
   -t TERM_CODE
   -t TERM_INPUT_CODE,TERM_OUTPUT_CODE
 		 ターミナルの文字コードを指定します。
-                 デフォルトはUTF-8。(configureオプションで変更可)
+                 デフォルトはUTF-8。(CMakeオプションで変更可)
   -p PROC_CODE
   -p PROC_INPUT_CODE,PROC_OUTPUT_CODE
 		 コマンドプロセスの文字コードを指定します。
-                 デフォルトはCP932。(configureオプションで変更可)
+                 デフォルトはCP932。(CMakeオプションで変更可)
   -i		 ISO-2022-JPのエスケープシーケンスを無視します。
   -n		 無変換モードにします。-oオプションを組み合わせて、script(1)
 		 の代わりに使用します。

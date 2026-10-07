@@ -10,7 +10,7 @@ if [ ! -d $distdir ]; then
   exit 1
 fi
 
-version=`grep ^AC_INIT configure.ac | sed -e 's/^.*\[\|\].*$//g'`
+version=`sed -n 's/^set(COCOT_VERSION "\(.*\)")$/\1/p' CMakeLists.txt`
 if [ X"$version" = X ]; then
   echo "Can't get current version."
   echo "Abort."
@@ -29,7 +29,7 @@ echo "Copy cocot to $name"
 cp -a cocot $name
 cd $name
 echo "Clean up $name"
-rm -rf .svn EastAsianWidth.txt autom4te.cache cygwin-build.sh release.sh *~
+rm -rf .svn EastAsianWidth.txt cygwin-build.sh release.sh *~
 cd ..
 echo "Archiving $tar"
 tar cfj $tar $name

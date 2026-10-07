@@ -10,18 +10,16 @@ if [ ! -d bin ]; then
   mkdir bin
 fi
 
-if [ -f Makefile ]; then
-  make distclean
-fi
-
 for proc_code in $PROC_CODE_LIST; do
   echo "** Build by $TERM_CODE / $proc_code"
-  ./configure \
-    --prefix=$PREFIX \
-    --with-default-term-code=$TERM_CODE \
-    --with-default-proc-code=$proc_code
-  make
-  strip -x cocot.exe
-  cp -v cocot.exe bin/cocot-$proc_code.exe
-  make distclean
+  rm -rf build
+  cmake -S . -B build \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX=$PREFIX \
+    -DDEFAULT_TERM_CODE=$TERM_CODE \
+    -DDEFAULT_PROC_CODE=$proc_code
+  cmake --build build
+  strip -x build/cocot.exe
+  cp -v build/cocot.exe bin/cocot-$proc_code.exe
 done
+rm -rf build

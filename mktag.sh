@@ -8,7 +8,7 @@ else
   echo "* Dry run mode."
 fi
 
-ver=`perl -nle '/^AC_INIT\([^,]+,\[([^\]]+)\]\)/ && print $1' configure.ac`
+ver=`perl -nle '/^set\(COCOT_VERSION "([^"]+)"\)/ && print $1' CMakeLists.txt`
 
 cmd="git tag -f cocot-$ver"
 

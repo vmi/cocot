@@ -2,14 +2,8 @@
 *.exe
 *.o
 *~
-.deps/
-Makefile
-autom4te.cache/
-config.h
-config.log
-config.status
-stamp-h1
 tmp/
 /cocot
 /cocot.exe
 *.log
+/build/

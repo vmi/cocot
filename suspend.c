@@ -14,7 +14,7 @@
 
 #include "init.h"
 
-int do_tstp = 0;
+volatile sig_atomic_t do_tstp = 0;
 
 static struct sigaction oact;
 

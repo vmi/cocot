@@ -57,7 +57,7 @@ package Bit;
 sub new {
     my $class = shift;
     my $self = [];
-    @$self = 0x10000 / 32;
+    @$self = (0) x (0x10000 / 32);
     return bless($self, $class);
 }
 

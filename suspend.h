@@ -1,4 +1,6 @@
-extern int do_tstp;
+#include <signal.h>
+
+extern volatile sig_atomic_t do_tstp;
 
 void sigtstp(int);
 

@@ -64,7 +64,6 @@ init(int *mfd_p, int *sfd_p)
     struct winsize win;
 #ifndef HAVE_LIBUTIL
     char *slave;
-    extern char *ptsname();
 #endif
 
     if (!isatty(STDIN_FILENO))

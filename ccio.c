@@ -41,6 +41,22 @@ ccio_noconv_destroy(void *noconv)
     return 0;
 }
 
+/* iconv_t is opaque, so it is kept in CCIO and passed by address. */
+static size_t
+ccio_iconv(void *cdp,
+	   const char **spp, size_t *scp,
+	   char **dpp, size_t *dcp)
+{
+    /* the input buffer is char ** or const char ** depending on the platform */
+    return iconv(*(iconv_t *) cdp, (void *) spp, scp, dpp, dcp);
+}
+
+static int
+ccio_iconv_close(void *cdp)
+{
+    return iconv_close(*(iconv_t *) cdp);
+}
+
 static int
 ccio_skip(const char **spp, size_t *scp)
 {
@@ -75,14 +91,15 @@ ccio_init(CCIO *c, char *tocode, char *fromcode, int dec_jis)
 	c->skip = ccio_skip;
 	c->destroy = l10n_ja_close;
     } else {
-	if ((c->handle = iconv_open(tocode, fromcode)) == (iconv_t) (-1))
+	if ((c->cd = iconv_open(tocode, fromcode)) == (iconv_t) -1)
 	    return CCIO_ERROR;
-	c->conv = (CCIO_CONV) iconv;
+	c->handle = &c->cd;
+	c->conv = ccio_iconv;
 	if (striEQ(fromcode, "UTF-8") && !striEQ(tocode, "UTF-8"))
 	    c->skip = l10n_cjk_uni_skip;
 	else
 	    c->skip = ccio_skip;
-	c->destroy = iconv_close;
+	c->destroy = ccio_iconv_close;
     }
     return CCIO_SUCCESS;
 }
@@ -96,26 +113,26 @@ ccio_done(CCIO *c)
 CCIO_STATUS
 ccio_read(CCIO *c, int fd, FILE *fp)
 {
-    int n;
+    ssize_t n;
 
     if ((n = read(fd, c->buf + c->len, sizeof(c->buf) - c->len)) <= 0)
 	return n == 0 ? CCIO_EOF : CCIO_ERROR;
     if (fp)
-	fwrite(c->buf + c->len, 1, n, fp);
+	fwrite(c->buf + c->len, 1, (size_t) n, fp);
     c->len += n;
     return CCIO_SUCCESS;
 }
 
 static CCIO_STATUS
-writen(int fd, char *buf, int cnt)
+writen(int fd, const char *buf, size_t cnt)
 {
-    int n;
+    ssize_t n;
 
     while (cnt > 0) {
 	if ((n = write(fd, buf, cnt)) < 0)
 	    return CCIO_ERROR;
 	buf += n;
-	cnt -= n;
+	cnt -= (size_t) n;
     }
     return CCIO_SUCCESS;
 }
@@ -138,25 +155,25 @@ ccio_write(CCIO *c, int fd)
 	    if (writen(fd, buf, n) == CCIO_ERROR)
 		return CCIO_ERROR;
 	}
-	if (rv != -1) {
-	    c->len = 0;
+	if (rv != (size_t) -1)
 	    break;
-	}
 	switch (errno) {
 	case EINVAL:
+	    /* keep the incomplete sequence for the next read */
 	    memmove(c->buf, ibuf, icnt);
 	    c->len = icnt;
-	    goto loopout;
+	    return CCIO_SUCCESS;
 	case EILSEQ:
-	    n = c->skip(&ibuf, &icnt);
-	    do {
-		write(fd, "#", 1); /* Ummm... */
-	    } while (--n > 0);
+	    /* replace the invalid character with '#' for each column */
+	    for (n = c->skip(&ibuf, &icnt); n > 0; n--) {
+		if (writen(fd, "#", 1) == CCIO_ERROR)
+		    return CCIO_ERROR;
+	    }
 	    break;
 	default: /* E2BIG */
 	    break;
 	}
     }
-loopout:
+    c->len = 0;
     return CCIO_SUCCESS;
 }

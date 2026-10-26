@@ -42,9 +42,7 @@ loop(int mfd, FILE *fp,
 {
     CCIO master, slave;
     fd_set fds;
-    int fdmax = max(STDIN_FILENO, STDOUT_FILENO) + 1;
-    if (fdmax < mfd)
-	fdmax = mfd + 1;
+    int fdmax = max(STDIN_FILENO, mfd) + 1;
     if (ccio_init(&master, proc_input_code, term_input_code, 0) == CCIO_ERROR ||
 	ccio_init(&slave, term_output_code, proc_output_code, dec_jis) == CCIO_ERROR)
 	fatal("%s: TERM_CODE(%s,%s) and/or PROC_CODE(%s,%s) is invalid.",
